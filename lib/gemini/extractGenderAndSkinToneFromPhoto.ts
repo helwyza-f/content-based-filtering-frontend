@@ -49,6 +49,7 @@ Contoh output:
     return JSON.parse(cleaned);
   } catch (err) {
     console.error("Gagal parsing response:", text);
+    console.error("Error detail:", err);
     throw new Error("Response dari Gemini tidak dapat diparsing");
   }
 }

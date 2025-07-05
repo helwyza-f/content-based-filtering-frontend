@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   const fileExt = file.name.split(".").pop();
   const fileName = `avatars/${userId}-${randomUUID()}.${fileExt}`;
 
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from("avatars")
     .upload(fileName, buffer, {
       contentType: file.type,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -53,6 +53,7 @@ export default function EditProfileClient({ userId, profile }: Props) {
       router.push("/profile");
     } catch (err) {
       alert("Update failed");
+      console.error("Error updating profile:", err);
     } finally {
       setLoading(false);
     }
@@ -88,6 +89,7 @@ export default function EditProfileClient({ userId, profile }: Props) {
       }
     } catch (err) {
       alert("AI scan failed");
+      console.error("Error during AI scan:", err);
     } finally {
       setScanLoading(false);
     }

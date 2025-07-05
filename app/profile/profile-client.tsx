@@ -17,6 +17,7 @@ type Props = {
 };
 
 export default function ProfileClient({ id, profile, avatarUrl }: Props) {
+  console.log(id);
   return (
     <div className="max-w-md mx-auto p-4">
       <Card>

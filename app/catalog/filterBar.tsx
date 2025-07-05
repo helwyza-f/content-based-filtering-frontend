@@ -11,15 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const genders = ["Boys", "Girls", "Men", "Unisex", "Women"];
-const categories = [
-  "Accessories",
-  "Apparel",
-  "Footwear",
-  "Free Items",
-  "Home",
-  "Personal Care",
-  "Sporting Goods",
-];
+
 const seasons = ["Fall", "Spring", "Summer", "Winter"];
 const usages = [
   "Casual",
