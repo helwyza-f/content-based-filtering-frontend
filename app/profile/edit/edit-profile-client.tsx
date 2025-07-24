@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "sonner";
 
 type Props = {
   userId: string;
@@ -68,32 +69,40 @@ export default function EditProfileClient({ userId, profile }: Props) {
   };
 
   const handleScan = async () => {
-    if (!photo) return alert("Please select a photo first.");
-    setScanLoading(true);
+  if (!photo) {
+    toast.warning("Please select a photo first.");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("image", photo);
+  setScanLoading(true);
 
-    try {
-      const res = await fetch("/api/extract-attributes", {
-        method: "POST",
-        body: formData,
-      });
+  const formData = new FormData();
+  formData.append("image", photo);
 
-      const result = await res.json();
-      if (res.ok) {
-        setGender(result.gender);
-        setSkinTone(result.skin_tone);
-      } else {
-        alert("Failed to extract attributes");
-      }
-    } catch (err) {
-      alert("AI scan failed");
-      console.error("Error during AI scan:", err);
-    } finally {
-      setScanLoading(false);
+  try {
+    const res = await fetch("/api/extract-attributes", {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await res.json();
+
+    if (res.ok) {
+      setGender(result.gender);
+      setSkinTone(result.skin_tone);
+      toast.success("Attributes extracted successfully!");
+    } else {
+      toast.error(result.error || "Failed to extract attributes");
     }
-  };
+  } catch (err) {
+    console.error("Error during AI scan:", err);
+    toast.error("AI scan failed. Please try again.");
+  } finally {
+    setScanLoading(false);
+  }
+};
+
+
 
   return (
     <div className="max-w-xl mx-auto space-y-6 p-4">

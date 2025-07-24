@@ -39,6 +39,8 @@ export default function CatalogClient({ gender, skinTone }: Props) {
     try {
       const params = new URLSearchParams({
         ...activeFilters,
+        gender, // injected from profile
+        skin_tone: skinTone,
         limit: ITEMS_PER_PAGE.toString(),
         page: currentPage.toString(),
       });
@@ -74,10 +76,22 @@ export default function CatalogClient({ gender, skinTone }: Props) {
   return (
     <div className="p-4 max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Outfit Catalog</h1>
-      <p className="text-center text-muted-foreground mb-6">
-        Gender: <strong>{gender}</strong> | Skin Tone:{" "}
-        <strong>{skinTone}</strong>
-      </p>
+
+      {/* Summary of active variables */}
+      <div className="mb-4 p-4 bg-muted rounded-lg text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <span className="text-muted-foreground">Showing results for:</span>
+          <ul className="list-disc list-inside ml-2 mt-1 text-foreground">
+            <li>
+              <strong>Gender:</strong> {gender}
+            </li>
+            <li>
+              <strong>Skin Tone:</strong> {skinTone}
+            </li>
+          </ul>
+        </div>
+        
+      </div>
 
       <FilterBar
         onChange={(f) => {
@@ -85,6 +99,25 @@ export default function CatalogClient({ gender, skinTone }: Props) {
           setFilters(f);
         }}
       />
+
+      {/* Active filters display */}
+      {Object.keys(filters).length > 0 && (
+        <div className="mb-6 text-sm text-muted-foreground">
+          <p className="mb-1 font-medium">Active Filters:</p>
+          <ul className="flex flex-wrap gap-2">
+            {Object.entries(filters)
+              .filter(([key]) => !["limit", "page", "gender", "skin_tone"].includes(key))
+              .map(([key, value]) => (
+                <li
+                  key={key}
+                  className="px-2 py-1 bg-muted rounded text-foreground border"
+                >
+                  {key}: <strong>{value}</strong>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -131,7 +164,7 @@ export default function CatalogClient({ gender, skinTone }: Props) {
             ))}
           </div>
 
-          {/* === Pagination with Input === */}
+          {/* Pagination */}
           <div className="mt-8 flex justify-center items-center gap-4">
             <Button
               variant="outline"

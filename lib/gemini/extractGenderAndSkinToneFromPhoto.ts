@@ -9,7 +9,7 @@ export async function extractGenderAndSkinToneFromPhoto(
   gender: string;
   skin_tone: string;
 }> {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const prompt = `
 Foto ini menunjukkan orang yang akan menggunakan aplikasi rekomendasi outfit.
