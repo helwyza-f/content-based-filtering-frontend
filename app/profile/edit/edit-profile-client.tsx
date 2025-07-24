@@ -86,7 +86,7 @@ export default function EditProfileClient({ userId, profile }: Props) {
     });
 
     const result = await res.json();
-
+    console.log("AI scan result:", result);
     if (res.ok) {
       setGender(result.gender);
       setSkinTone(result.skin_tone);

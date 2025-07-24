@@ -11,11 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 const usages = [
-  "Casual",
- 
   "Formal",
-
-
+  "Casual",
   "Smart Casual",
   "Sports",
 
