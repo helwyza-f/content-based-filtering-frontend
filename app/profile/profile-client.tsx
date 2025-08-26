@@ -12,6 +12,9 @@ type Props = {
     last_name: string | null;
     gender: string | null;
     skin_tone: string | null;
+    tinggi: number | null;
+    berat: number | null;
+    // role?: string | null; // <- kalau nanti mau dipakai tinggal uncomment
   };
   avatarUrl: string | null;
 };
@@ -26,14 +29,17 @@ export default function ProfileClient({ id, profile, avatarUrl }: Props) {
         </CardHeader>
         <CardContent className="space-y-4">
           {avatarUrl && (
-            <Image
-              src={avatarUrl}
-              alt="Profile Image"
-              width={120}
-              height={120}
-              className="rounded-full mx-auto "
-            />
+            <div className="w-28 h-28 rounded-full overflow-hidden mx-auto">
+              <Image
+                src={avatarUrl}
+                alt="Profile Image"
+                width={120}
+                height={120}
+                className="w-full h-full object-cover"
+              />
+            </div>
           )}
+
           <div className="text-center space-y-1">
             <p className="text-lg font-semibold">
               {profile.first_name} {profile.last_name}
@@ -44,6 +50,13 @@ export default function ProfileClient({ id, profile, avatarUrl }: Props) {
             <p className="text-gray-700 capitalize">
               Skin Tone: {profile.skin_tone || "-"}
             </p>
+            <p className="text-gray-700">
+              Tinggi: {profile.tinggi ? `${profile.tinggi} cm` : "-"}
+            </p>
+            <p className="text-gray-700">
+              Berat: {profile.berat ? `${profile.berat} kg` : "-"}
+            </p>
+            {/* <p className="text-gray-700">Role: {profile.role || "user"}</p> */}
           </div>
           <div className="text-center">
             <Link href="/profile/edit">

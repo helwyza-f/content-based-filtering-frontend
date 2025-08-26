@@ -15,6 +15,8 @@ type Props = {
     last_name: string | null;
     gender: string | null;
     skin_tone: string | null;
+    tinggi?: number | null;
+    berat?: number | null;
     avatar_url?: string | null;
   } | null;
 };
@@ -30,6 +32,8 @@ export default function EditProfileClient({ userId, profile }: Props) {
   const [scanLoading, setScanLoading] = useState(false);
   const [gender, setGender] = useState(profile?.gender ?? "");
   const [skinTone, setSkinTone] = useState(profile?.skin_tone ?? "");
+  const [tinggi, setTinggi] = useState(profile?.tinggi ?? 160);
+  const [berat, setBerat] = useState(profile?.berat ?? 55);
 
   const router = useRouter();
 
@@ -40,6 +44,10 @@ export default function EditProfileClient({ userId, profile }: Props) {
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
       formData.append("userId", userId);
+      formData.append("gender", gender);
+      formData.append("skin_tone", skinTone);
+      formData.append("tinggi", String(tinggi));
+      formData.append("berat", String(berat));
       if (photo) {
         formData.append("image", photo);
       }
@@ -51,9 +59,10 @@ export default function EditProfileClient({ userId, profile }: Props) {
 
       if (!res.ok) throw new Error("Failed to update profile");
 
+      toast.success("Profile updated successfully!");
       router.push("/profile");
     } catch (err) {
-      alert("Update failed");
+      toast.error("Update failed");
       console.error("Error updating profile:", err);
     } finally {
       setLoading(false);
@@ -69,40 +78,38 @@ export default function EditProfileClient({ userId, profile }: Props) {
   };
 
   const handleScan = async () => {
-  if (!photo) {
-    toast.warning("Please select a photo first.");
-    return;
-  }
-
-  setScanLoading(true);
-
-  const formData = new FormData();
-  formData.append("image", photo);
-
-  try {
-    const res = await fetch("/api/extract-attributes", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await res.json();
-    console.log("AI scan result:", result);
-    if (res.ok) {
-      setGender(result.gender);
-      setSkinTone(result.skin_tone);
-      toast.success("Attributes extracted successfully!");
-    } else {
-      toast.error(result.error || "Failed to extract attributes");
+    if (!photo) {
+      toast.warning("Please select a photo first.");
+      return;
     }
-  } catch (err) {
-    console.error("Error during AI scan:", err);
-    toast.error("AI scan failed. Please try again.");
-  } finally {
-    setScanLoading(false);
-  }
-};
 
+    setScanLoading(true);
 
+    const formData = new FormData();
+    formData.append("image", photo);
+
+    try {
+      const res = await fetch("/api/extract-attributes", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      console.log("AI scan result:", result);
+      if (res.ok) {
+        setGender(result.gender);
+        setSkinTone(result.skin_tone);
+        toast.success("Attributes extracted successfully!");
+      } else {
+        toast.error(result.error || "Failed to extract attributes");
+      }
+    } catch (err) {
+      console.error("Error during AI scan:", err);
+      toast.error("AI scan failed. Please try again.");
+    } finally {
+      setScanLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-xl mx-auto space-y-6 p-4">
@@ -138,6 +145,24 @@ export default function EditProfileClient({ userId, profile }: Props) {
         <Input type="file" accept="image/*" onChange={handleFileChange} />
       </div>
 
+      <div>
+        <Label>Tinggi (cm)</Label>
+        <Input
+          type="number"
+          value={tinggi}
+          onChange={(e) => setTinggi(Number(e.target.value))}
+        />
+      </div>
+
+      <div>
+        <Label>Berat (kg)</Label>
+        <Input
+          type="number"
+          value={berat}
+          onChange={(e) => setBerat(Number(e.target.value))}
+        />
+      </div>
+
       <div className="flex gap-3">
         <Button
           type="button"
@@ -159,6 +184,12 @@ export default function EditProfileClient({ userId, profile }: Props) {
           </p>
           <p>
             <span className="font-semibold">Skin Tone:</span> {skinTone || "-"}
+          </p>
+          <p>
+            <span className="font-semibold">Tinggi:</span> {tinggi || "-"} cm
+          </p>
+          <p>
+            <span className="font-semibold">Berat:</span> {berat || "-"} kg
           </p>
         </div>
       )}

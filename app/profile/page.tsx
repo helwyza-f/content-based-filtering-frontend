@@ -14,7 +14,9 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, gender, skin_tone, avatar_url")
+    .select(
+      "first_name, last_name, gender, skin_tone, avatar_url, role, tinggi, berat"
+    )
     .eq("id", user.id)
     .single();
 
@@ -34,6 +36,9 @@ export default async function ProfilePage() {
         last_name: profile.last_name ?? null,
         gender: profile.gender ?? null,
         skin_tone: profile.skin_tone ?? null,
+        // role: profile.role ?? "user",
+        tinggi: profile.tinggi ?? 160,
+        berat: profile.berat ?? 55,
       }}
       avatarUrl={profile.avatar_url ?? null}
     />

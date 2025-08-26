@@ -15,7 +15,10 @@ export default async function EditProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("first_name, last_name, gender, skin_tone")
+    .select(
+      "first_name, last_name, gender, skin_tone, tinggi, berat"
+      // "role" // <- uncomment kalau nanti mau ikut diedit juga
+    )
     .eq("id", user.id)
     .single();
 
