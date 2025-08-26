@@ -65,7 +65,9 @@ export default function ProductsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Button onClick={() => setPage(1)}>Search</Button>
+        <Button onClick={() => router.push("/admin/products/new")}>
+          Add New
+        </Button>
       </div>
 
       {/* Products List */}
