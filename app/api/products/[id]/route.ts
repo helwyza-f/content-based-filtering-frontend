@@ -9,28 +9,30 @@ const supabase = createClient(
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .eq("id", id)
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 400 });
 
   return NextResponse.json(data);
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   const { error } = await supabase.from("products").delete().eq("id", id);
-revalidatePath("/admin/products");
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  revalidatePath("/admin/products");
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 400 });
 
   return NextResponse.json({ success: true });
 }
