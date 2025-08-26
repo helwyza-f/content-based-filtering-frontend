@@ -8,9 +8,10 @@ import { ThemeSwitcher } from "./theme-switcher";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
+
 const navItems = [
   { label: "Profile", href: "/profile" },
-  { label: "Catalog", href: "/catalog" },
+  // { label: "Catalog", href: "/catalog" },
   { label: "Recommend", href: "/recommend" },
 ];
 
@@ -40,6 +41,10 @@ export default function Navbar() {
       listener?.subscription.unsubscribe();
     };
   }, [supabase]);
+
+  if (pathname.startsWith("/admin")) {
+    return null; // Hide navbar on admin pages
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

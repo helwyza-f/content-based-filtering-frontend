@@ -14,11 +14,7 @@ export default async function RecommendPage({
 
   if (!user) redirect("/login");
 
-  const params = await searchParams;
-  const id = params.id;
-  if (!id) {
-    return <p className="text-center mt-10">No reference item selected.</p>;
-  }
+  
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -32,7 +28,6 @@ export default async function RecommendPage({
 
   return (
     <RecommendClient
-      referenceId={id}
       skinTone={profile.skin_tone}
       userGender={profile.gender}
     />

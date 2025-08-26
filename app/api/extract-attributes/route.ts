@@ -35,8 +35,8 @@ Tugas Anda:
 
 Jika valid, kembalikan format JSON seperti ini:
 {
-  "gender": "men | women",
-  "skin_tone": "warm | cool | neutral"
+  "gender": "Men | Women",
+  "skin_tone": "Warm | Cool | Neutral"
 }
 
 Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
@@ -53,7 +53,10 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
       },
     ]);
 
-    const rawText = result.response.text().replace(/```json|```/g, "").trim();
+    const rawText = result.response
+      .text()
+      .replace(/```json|```/g, "")
+      .trim();
 
     let json: any;
     try {
@@ -65,17 +68,29 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
 
     // Tangani kondisi error dari AI
     if (json?.error === "Multiple people detected") {
-      return NextResponse.json({ error: "Gambar berisi lebih dari satu orang" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Gambar berisi lebih dari satu orang" },
+        { status: 400 }
+      );
     }
     if (json?.error === "No human detected") {
-      return NextResponse.json({ error: "Gambar bukan manusia" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Gambar bukan manusia" },
+        { status: 400 }
+      );
     }
     if (json?.error === "Unable to determine attributes") {
-      return NextResponse.json({ error: "Atribut tidak dapat dikenali" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Atribut tidak dapat dikenali" },
+        { status: 400 }
+      );
     }
 
     if (!json.gender || !json.skin_tone) {
-      return NextResponse.json({ error: "Response tidak lengkap dari AI" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Response tidak lengkap dari AI" },
+        { status: 400 }
+      );
     }
 
     // Ambil user dari sesi Supabase
@@ -85,7 +100,10 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
     } = await supabase.auth.getUser();
 
     if (!user || userError) {
-      return NextResponse.json({ error: "Unauthorized or user not found" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Unauthorized or user not found" },
+        { status: 401 }
+      );
     }
 
     // Simpan hasil ke database
@@ -98,7 +116,10 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
       .eq("id", user.id);
 
     if (updateError) {
-      return NextResponse.json({ error: "Gagal menyimpan data ke profil" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Gagal menyimpan data ke profil" },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
