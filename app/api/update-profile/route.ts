@@ -11,10 +11,12 @@ export async function POST(req: NextRequest) {
   const userId = formData.get("userId") as string;
   const first_name = formData.get("first_name") as string;
   const last_name = formData.get("last_name") as string;
+  const tinggi = formData.get("tinggi") ? Number(formData.get("tinggi")) : null;
+  const berat = formData.get("berat") ? Number(formData.get("berat")) : null;
   const file = formData.get("image") as File | null;
 
-  let gender: string | null = null;
-  let skin_tone: string | null = null;
+  let gender: string | null = (formData.get("gender") as string) ?? null;
+  let skin_tone: string | null = (formData.get("skin_tone") as string) ?? null;
   let avatar_url: string | null = null;
 
   if (file) {
@@ -23,11 +25,16 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(arrayBuffer);
     const base64 = buffer.toString("base64");
 
-    // Ekstrak atribut pakai Gemini
+    // Ekstrak atribut pakai Gemini (hanya kalau gender/skin_tone belum diisi manual)
     try {
-      const result = await extractGenderAndSkinToneFromPhoto(base64, file.type);
-      gender = result.gender;
-      skin_tone = result.skin_tone;
+      if (!gender || !skin_tone) {
+        const result = await extractGenderAndSkinToneFromPhoto(
+          base64,
+          file.type
+        );
+        gender = result.gender;
+        skin_tone = result.skin_tone;
+      }
     } catch {
       return NextResponse.json(
         { error: "Failed to extract attributes" },
@@ -59,6 +66,8 @@ export async function POST(req: NextRequest) {
     .update({
       first_name,
       last_name,
+      tinggi,
+      berat,
       ...(avatar_url && { avatar_url }),
       ...(gender && { gender }),
       ...(skin_tone && { skin_tone }),
