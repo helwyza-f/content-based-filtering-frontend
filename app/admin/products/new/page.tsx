@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Attributes = {
   gender: string;
@@ -30,6 +31,7 @@ export default function OutfitAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [loadingExtract, setLoadingExtract] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
+  const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -100,6 +102,7 @@ export default function OutfitAdminPage() {
 
       const { error: dbError } = await supabase.from("products").insert({
         image_link: imageUrl,
+        created_at: new Date().toISOString(), // ✅ masukin created_at manual
         ...attributes,
       });
 
@@ -113,7 +116,8 @@ export default function OutfitAdminPage() {
       setFile(null);
       setPreview(null);
       setAttributes(null);
-      
+      router.refresh();
+      router.push("/admin/products");
     } catch (err) {
       setError("Error saving outfit");
       toast.error("Error saving outfit");
@@ -179,7 +183,10 @@ export default function OutfitAdminPage() {
                 <Input
                   value={attributes.product_display_name}
                   onChange={(e) =>
-                    setAttributes({ ...attributes, product_display_name: e.target.value })
+                    setAttributes({
+                      ...attributes,
+                      product_display_name: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -197,7 +204,10 @@ export default function OutfitAdminPage() {
                 <Input
                   value={attributes.master_category}
                   onChange={(e) =>
-                    setAttributes({ ...attributes, master_category: e.target.value })
+                    setAttributes({
+                      ...attributes,
+                      master_category: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -206,7 +216,10 @@ export default function OutfitAdminPage() {
                 <Input
                   value={attributes.sub_category}
                   onChange={(e) =>
-                    setAttributes({ ...attributes, sub_category: e.target.value })
+                    setAttributes({
+                      ...attributes,
+                      sub_category: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -215,7 +228,10 @@ export default function OutfitAdminPage() {
                 <Input
                   value={attributes.article_type}
                   onChange={(e) =>
-                    setAttributes({ ...attributes, article_type: e.target.value })
+                    setAttributes({
+                      ...attributes,
+                      article_type: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -224,7 +240,10 @@ export default function OutfitAdminPage() {
                 <Input
                   value={attributes.base_colour}
                   onChange={(e) =>
-                    setAttributes({ ...attributes, base_colour: e.target.value })
+                    setAttributes({
+                      ...attributes,
+                      base_colour: e.target.value,
+                    })
                   }
                 />
               </div>

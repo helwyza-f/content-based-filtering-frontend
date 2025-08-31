@@ -30,9 +30,9 @@ Tugas Anda:
 3. Jika valid, ekstrak atribut berikut:
 {
   "product_display_name": "string",
-  "gender": "men | women | unisex",
+  "gender": "Men | Women | unisex",
   "master_category": "Apparel | Accessories | Footwear | ...",
-  "sub_category": "",
+  "sub_category": "Topwear | Bottomwear | ...",
   "article_type": "string",
   "base_colour": "string",
   "season": "Spring | Summer | Fall | Winter | All",
@@ -53,27 +53,42 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
       },
     ]);
 
-    const rawText = result.response.text().replace(/```json|```/g, "").trim();
+    const rawText = result.response
+      .text()
+      .replace(/```json|```/g, "")
+      .trim();
 
     let json: any;
     try {
       json = JSON.parse(rawText);
     } catch (err) {
       console.error("Gagal parsing JSON:", rawText);
-      return NextResponse.json({ error: "AI response is not valid JSON" }, { status: 400 });
+      return NextResponse.json(
+        { error: "AI response is not valid JSON" },
+        { status: 400 }
+      );
     }
 
     // Tangani kondisi error dari AI
     if (json?.error === "Not an outfit") {
-      return NextResponse.json({ error: "Gambar bukan outfit" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Gambar bukan outfit" },
+        { status: 400 }
+      );
     }
     if (json?.error === "Unable to analyze image") {
-      return NextResponse.json({ error: "Gambar tidak dapat dianalisis" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Gambar tidak dapat dianalisis" },
+        { status: 400 }
+      );
     }
 
     // Validasi minimal atribut wajib
     if (!json.product_display_name || !json.gender || !json.master_category) {
-      return NextResponse.json({ error: "Response tidak lengkap dari AI" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Response tidak lengkap dari AI" },
+        { status: 400 }
+      );
     }
 
     return NextResponse.json({ attributes: json });

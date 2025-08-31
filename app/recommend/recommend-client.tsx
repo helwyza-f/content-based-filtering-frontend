@@ -130,7 +130,7 @@ export default function RecommendClient({
         .eq("gender", userGender)
         // 💡 Filter untuk sub_category "Topwear" ATAU "Bottomwear"
         .in("sub_category", ["Topwear", "Bottomwear"])
-        .order("created_at", { ascending: false })
+        .order("created_at", { ascending: false, nullsFirst: false })
         .limit(4);
 
       if (!error && data) {
