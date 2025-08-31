@@ -77,7 +77,7 @@ export default function RecommendClient({
     if (subCategory === "Bottomwear") {
       return "Bottomwear";
     }
-    if (subCategory === "Shoes") {
+    if (subCategory === "Footwear") {
       // Berdasarkan data Anda, Footwear -> Shoes
       return "Footwear";
     }
