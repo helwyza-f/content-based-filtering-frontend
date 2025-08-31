@@ -30,7 +30,7 @@ Tugas Anda:
 3. Jika valid, ekstrak atribut berikut:
 {
   "product_display_name": "string",
-  "gender": "Men | Women | unisex",
+  "gender": "Men | Women ",
   "master_category": "Apparel | Accessories | Footwear | ...",
   "sub_category": "Topwear | Bottomwear | ...",
   "article_type": "string",
@@ -39,7 +39,7 @@ Tugas Anda:
   "usage": "Casual | Formal | Sports | ...",
 }
 
-Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
+Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error. Pastikan case-sensitive untuk semua atribut di atas.
 `;
 
   try {
