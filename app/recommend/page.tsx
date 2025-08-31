@@ -14,20 +14,20 @@ export default async function RecommendPage({
 
   if (!user) redirect("/login");
 
-  
-
   const { data: profile } = await supabase
     .from("profiles")
     .select("skin_tone, gender")
     .eq("id", user.id)
     .single();
 
-  if (!profile) {
-    return <p className="text-center mt-10">Profile not found.</p>;
+  // 🚩 kalau belum ada profile, redirect ke setup
+  if (!profile || !profile.skin_tone || !profile.gender) {
+    redirect("/profile");
   }
 
   return (
     <RecommendClient
+      userId={user.id}
       skinTone={profile.skin_tone}
       userGender={profile.gender}
     />

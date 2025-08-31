@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createClient } from "@/lib/supabase/server";
+import { randomUUID } from "crypto";
 
-// Inisialisasi Gemini
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
 
 export async function POST(req: NextRequest) {
@@ -66,26 +66,10 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
       throw new Error("AI response is not valid JSON");
     }
 
-    // Tangani kondisi error dari AI
-    if (json?.error === "Multiple people detected") {
-      return NextResponse.json(
-        { error: "Gambar berisi lebih dari satu orang" },
-        { status: 400 }
-      );
+    // Tangani error dari AI
+    if (json?.error) {
+      return NextResponse.json({ error: json.error }, { status: 400 });
     }
-    if (json?.error === "No human detected") {
-      return NextResponse.json(
-        { error: "Gambar bukan manusia" },
-        { status: 400 }
-      );
-    }
-    if (json?.error === "Unable to determine attributes") {
-      return NextResponse.json(
-        { error: "Atribut tidak dapat dikenali" },
-        { status: 400 }
-      );
-    }
-
     if (!json.gender || !json.skin_tone) {
       return NextResponse.json(
         { error: "Response tidak lengkap dari AI" },
@@ -106,12 +90,34 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
       );
     }
 
-    // Simpan hasil ke database
+    // 🔹 Upload close-up ke Supabase Storage
+    const fileName = `closeups/${user.id}-${randomUUID()}.jpg`;
+    const { error: uploadError } = await supabase.storage
+      .from("avatars") // bucket name kamu
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return NextResponse.json(
+        { error: "Gagal upload close-up" },
+        { status: 500 }
+      );
+    }
+
+    const {
+      data: { publicUrl: closeupUrl },
+    } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+    // 🔹 Update profile dengan atribut + close-up url
     const { error: updateError } = await supabase
       .from("profiles")
       .update({
         gender: json.gender,
         skin_tone: json.skin_tone,
+        closeup_url: closeupUrl, // pastikan kamu ALTER TABLE tambahin kolom ini
       })
       .eq("id", user.id);
 
@@ -125,6 +131,7 @@ Jangan sertakan penjelasan tambahan, hanya JSON yang valid atau objek error.
     return NextResponse.json({
       gender: json.gender,
       skin_tone: json.skin_tone,
+      closeup_url: closeupUrl,
     });
   } catch (err) {
     console.error("AI extraction failed:", err);

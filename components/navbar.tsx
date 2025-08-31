@@ -8,11 +8,10 @@ import { ThemeSwitcher } from "./theme-switcher";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
-
 const navItems = [
   { label: "Profile", href: "/profile" },
-  // { label: "Catalog", href: "/catalog" },
   { label: "Recommend", href: "/recommend" },
+  { label: "History", href: "/history" },
 ];
 
 export default function Navbar() {

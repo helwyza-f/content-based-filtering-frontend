@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,53 +14,65 @@ type Props = {
     skin_tone: string | null;
     tinggi: number | null;
     berat: number | null;
-    // role?: string | null; // <- kalau nanti mau dipakai tinggal uncomment
   };
   avatarUrl: string | null;
 };
 
 export default function ProfileClient({ id, profile, avatarUrl }: Props) {
-  console.log(id);
   return (
-    <div className="max-w-md mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {avatarUrl && (
-            <div className="w-28 h-28 rounded-full overflow-hidden mx-auto">
-              <Image
-                src={avatarUrl}
-                alt="Profile Image"
-                width={120}
-                height={120}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+    <div className="max-w-xl mx-auto p-4 space-y-6">
+      {/* Avatar / Full Body Model */}
+      {avatarUrl ? (
+        <div className="relative w-full max-w-sm mx-auto aspect-[9/12] max-h-[400px] rounded-xl overflow-hidden shadow-md">
+          <Image
+            src={avatarUrl}
+            alt="Profile Avatar"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+      ) : (
+        <div className="w-full max-w-sm mx-auto aspect-[9/12] max-h-[400px] rounded-xl bg-gray-200 flex items-center justify-center text-gray-500">
+          No Avatar
+        </div>
+      )}
 
+      {/* User Info */}
+      <Card className="w-full max-w-sm mx-auto  ">
+        <CardContent className="p-6 space-y-4">
           <div className="text-center space-y-1">
-            <p className="text-lg font-semibold">
+            <h2 className="text-2xl font-bold">
               {profile.first_name} {profile.last_name}
+            </h2>
+            <p className="text-gray-600">
+              {profile.gender ? `Gender: ${profile.gender}` : "Gender: -"}
             </p>
-            <p className="text-gray-700 capitalize">
-              Gender: {profile.gender || "-"}
+            <p className="text-gray-600">
+              {profile.skin_tone
+                ? `Skin Tone: ${profile.skin_tone}`
+                : "Skin Tone: -"}
             </p>
-            <p className="text-gray-700 capitalize">
-              Skin Tone: {profile.skin_tone || "-"}
-            </p>
-            <p className="text-gray-700">
-              Tinggi: {profile.tinggi ? `${profile.tinggi} cm` : "-"}
-            </p>
-            <p className="text-gray-700">
-              Berat: {profile.berat ? `${profile.berat} kg` : "-"}
-            </p>
-            {/* <p className="text-gray-700">Role: {profile.role || "user"}</p> */}
           </div>
-          <div className="text-center">
+
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div className="p-3 bg-muted rounded-lg">
+              <p className="text-sm text-gray-500">Tinggi</p>
+              <p className="text-lg font-semibold">
+                {profile.tinggi ? `${profile.tinggi} cm` : "-"}
+              </p>
+            </div>
+            <div className="p-3 bg-muted rounded-lg">
+              <p className="text-sm text-gray-500">Berat</p>
+              <p className="text-lg font-semibold">
+                {profile.berat ? `${profile.berat} kg` : "-"}
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center pt-4">
             <Link href="/profile/edit">
-              <Button>Edit Profile</Button>
+              <Button className="w-full">Edit Profile</Button>
             </Link>
           </div>
         </CardContent>
