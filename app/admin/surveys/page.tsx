@@ -52,7 +52,7 @@ export default async function SurveysPage() {
     new Set((feedback || []).map((f) => f.product_id).filter(Boolean))
   ) as number[];
 
-  let productMap: Record<number, Product> = {};
+  const productMap: Record<number, Product> = {};
 
   if (productIds.length > 0) {
     // 4. Query products hanya berdasarkan product_id yang muncul
