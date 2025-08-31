@@ -1,4 +1,3 @@
-// app/api/get-survey-items/route.ts
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
@@ -33,9 +32,15 @@ export async function GET(req: Request) {
     });
 
     const recommendations = await res.json();
-    const allItems = Object.values(recommendations.recommendations).flatMap(
-      (style: any) => Object.values(style).flat()
-    );
+
+    // Flatten the array of all recommended items and filter by mapped_category
+    const allItems = Object.values(recommendations.recommendations)
+      .flatMap((style: any) => Object.values(style).flat())
+      .filter(
+        (item: any) =>
+          item.mapped_category === "Topwear" ||
+          item.mapped_category === "Bottomwear"
+      );
 
     // Ambil 5 item unik secara acak
     const shuffledItems = allItems.sort(() => 0.5 - Math.random());

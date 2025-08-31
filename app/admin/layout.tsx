@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Package, Users } from "lucide-react";
+import { LayoutDashboard, Package, Users, BookCopy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
@@ -23,6 +23,7 @@ export default function AdminLayout({
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Products", href: "/admin/products", icon: Package },
     { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Surveys", href: "/admin/surveys", icon: BookCopy },
   ];
 
   return (
